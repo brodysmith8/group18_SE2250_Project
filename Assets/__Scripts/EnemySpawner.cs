@@ -7,11 +7,12 @@ public class EnemySpawner : MonoBehaviour
     public GameObject camera; 
     
     [SerializeField] GameObject enemyPrefab;
-    [SerializeField] int spawnXOffset = 4;
-
-    private float lastXCoord; 
+    [SerializeField] int spawnXOffset = 7;
+    [SerializeField] int maxEnemies = 3;
 
     private GameObject spawnedEnemy;
+    private int currentEnemies = 0;
+    private float lastXCoord;
 
     public HeroKnight player;
     public GameObject playerObject;
@@ -27,6 +28,7 @@ public class EnemySpawner : MonoBehaviour
         player = playerObject.GetComponent<HeroKnight>();
 
         spawnedEnemy = Instantiate(enemyPrefab, new Vector2(6, 0), new Quaternion(0, 0, 0, 0));
+        currentEnemies++;
     }
 
 
@@ -41,9 +43,10 @@ public class EnemySpawner : MonoBehaviour
 
 
         // When spawnedEnemy = null, then it is despawned, indicating that it is dead.
-        if (camera.transform.position.x - lastXCoord > 2 && (spawnedEnemy == null)) {
+        if (camera.transform.position.x - lastXCoord > 2 && (spawnedEnemy == null) && currentEnemies != maxEnemies) {
             lastXCoord = camera.transform.position.x;
             spawnedEnemy = Instantiate(enemyPrefab, new Vector2(playerObject.transform.position.x + spawnXOffset, 0), new Quaternion(0, 0, 0, 0));
+            currentEnemies++;
         }
     }
 }
