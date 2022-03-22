@@ -15,7 +15,7 @@ public class HeroHealth : MonoBehaviour
     {
         heroCurrentHealth = heroMaxHealth;
         healthBar.setMaxHealth(heroMaxHealth);
-
+        player = GameObject.Find("HeroKnight").GetComponent<HeroKnight>();
     }
 
 
@@ -29,7 +29,7 @@ public class HeroHealth : MonoBehaviour
         }
     }
 
-    void ObjectTakeDamage (int amount)
+    public void ObjectTakeDamage (int amount)
     {
         heroCurrentHealth -= amount; // subtract health
         healthBar.SetHealth(heroCurrentHealth);
@@ -37,12 +37,13 @@ public class HeroHealth : MonoBehaviour
 
         if (heroCurrentHealth <= 0)
         {
+            player.deadState = true;
             anim.SetTrigger("die");
             Invoke("RestartScene", 3f);
         }
     }
 
-    void Heal (int amount)
+    public void Heal (int amount)
     {
         heroCurrentHealth += amount; // add certain amount of healh 
         if (heroCurrentHealth > heroMaxHealth) // if the current health is greater than max health

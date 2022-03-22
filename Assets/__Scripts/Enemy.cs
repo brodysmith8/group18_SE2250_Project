@@ -34,6 +34,9 @@ public class Enemy : MonoBehaviour
 
     private float xOffsetHitbox = 1.5f;
     private float yOffsetHitbox = 0.662f;
+    private float xOffsetHitboxBoss = 5f;
+    private float xOffsetHitboxShieldAttack = 1f;
+    private float yOffsetHitboxShieldAttack = 0.662f;
 
     private float inputX = -1;
 
@@ -41,6 +44,7 @@ public class Enemy : MonoBehaviour
     public GameObject playerObject;
 
     public bool deadState = false;
+    public bool isBoss = false;
 
     // Use this for initialization
     void Start()
@@ -56,9 +60,9 @@ public class Enemy : MonoBehaviour
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         playerObject = GameObject.Find("HeroKnight");
         player = playerObject.GetComponent<HeroKnight>();
-
-        print(playerObject.transform.position.x);
-        print(this.transform.position.x);
+        
+        if (this.gameObject.name == "Boss") 
+            isBoss = true;
 
         GetComponent<SpriteRenderer>().flipX = true;
         m_facingDirection = 1;
@@ -67,9 +71,6 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         
-        print(this.transform.position.x);
-
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
@@ -156,8 +157,34 @@ public class Enemy : MonoBehaviour
         // handle being attacked. Bilateral hitbox (works when enemy is attacking from left or right)
         if (player.isAttacking && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitbox && Mathf.Abs(this.transform.position.y - playerObject.transform.position.y) < yOffsetHitbox)
         {
-            ObjectTakeDamage(25);
+            ObjectTakeDamage(25, false);
             m_body2d.velocity = new Vector2(m_facingDirection * 3f, 2f);
+        } else if (player.isBlocking && player.shieldCombatMode && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitboxShieldAttack && Mathf.Abs(this.transform.position.y - playerObject.transform.position.y) < yOffsetHitboxShieldAttack) {
+            ObjectTakeDamage(15, true);
+            DealDamageToPlayer(10);
+            m_body2d.velocity = new Vector2(m_facingDirection * 2f, 1.5f);
+        }
+
+        // handle being attacked. Bilateral hitbox (works when enemy is attacking from left or right)
+        if (player.isAttacking && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitbox && Mathf.Abs(this.transform.position.y - playerObject.transform.position.y) < yOffsetHitbox)
+        {
+            ObjectTakeDamage(25, false);
+            m_body2d.velocity = new Vector2(m_facingDirection * 3f, 2f);
+        } else if (player.isBlocking && player.shieldCombatMode && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitboxShieldAttack && Mathf.Abs(this.transform.position.y - playerObject.transform.position.y) < yOffsetHitboxShieldAttack) {
+            ObjectTakeDamage(15, true);
+            DealDamageToPlayer(10);
+            m_body2d.velocity = new Vector2(m_facingDirection * 2f, 1.5f);
+        }
+
+        // handle being attacked. Bilateral hitbox (works when enemy is attacking from left or right)
+        if (isBoss && player.isAttacking && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitboxBoss)
+        {
+            ObjectTakeDamage(25, false);
+            m_body2d.velocity = new Vector2(m_facingDirection * 3f, 2f);
+        } else if (isBoss && player.isBlocking && player.shieldCombatMode && !deadState && m_timeSinceAttack > 0.4f && Mathf.Abs(this.transform.position.x - playerObject.transform.position.x) < xOffsetHitboxBoss && Mathf.Abs(this.transform.position.y - playerObject.transform.position.y) < yOffsetHitboxShieldAttack) {
+            ObjectTakeDamage(15, true);
+            DealDamageToPlayer(10);
+            m_body2d.velocity = new Vector2(m_facingDirection * 2f, 1.5f);
         }
     }
 
@@ -186,15 +213,33 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void ObjectTakeDamage(int amount)
+    void DealDamageToPlayer(int amount) {
+        playerObject.GetComponent<HeroHealth>().ObjectTakeDamage(10);
+    }
+
+    void HealPlayer(int amount) {
+        playerObject.GetComponent<HeroHealth>().Heal(amount);
+    }
+
+    void ObjectTakeDamage(int amount, bool shieldKill)
     {
         enemyCurrentHealth -= amount; // subtract health
-        m_animator.SetTrigger("Hurt");
+        print("damage");
+
+        if (!isBoss) 
+            m_animator.SetTrigger("Hurt");
 
         if (enemyCurrentHealth <= 0)
         {
             deadState = true;
-            m_animator.SetTrigger("die");
+            if (shieldKill) {
+                HealPlayer(20);
+            } else {
+                HealPlayer(35);
+            }
+            if(!isBoss)
+                m_animator.SetTrigger("die");
+            
             Invoke("DeleteEnemy", 1f);
         }
         m_timeSinceAttack = 0;

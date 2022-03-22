@@ -39,9 +39,12 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (playerObject.transform.position.x >= 30 && spawnedEnemy == null) {
+            // spawn boss
+            
+        }
+
         // this is a spawn condition.
-
-
         // When spawnedEnemy = null, then it is despawned, indicating that it is dead.
         if (camera.transform.position.x - lastXCoord > 2 && (spawnedEnemy == null) && currentEnemies != maxEnemies) {
             lastXCoord = camera.transform.position.x;
