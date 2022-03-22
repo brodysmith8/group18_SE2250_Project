@@ -9,6 +9,7 @@ public class HeroHealth : MonoBehaviour
     public int heroCurrentHealth;
     public HealthBarStatus healthBar; 
     public Animator anim;
+    public HeroKnight player;
   
     void Start()
     {
@@ -23,6 +24,8 @@ public class HeroHealth : MonoBehaviour
         if (collision.tag == "Firepit")
         {
             ObjectTakeDamage(15); // subtract 15 from health every time player touches fire
+        } else if (collision.tag == "Enemy" && !player.isBlocking && !collision.gameObject.GetComponent<Enemy>().deadState) { // subtract 10 from health every time an enemy hits a player
+            ObjectTakeDamage(10);
         }
     }
 
@@ -30,6 +33,7 @@ public class HeroHealth : MonoBehaviour
     {
         heroCurrentHealth -= amount; // subtract health
         healthBar.SetHealth(heroCurrentHealth);
+        anim.SetTrigger("Hurt");
 
         if (heroCurrentHealth <= 0)
         {

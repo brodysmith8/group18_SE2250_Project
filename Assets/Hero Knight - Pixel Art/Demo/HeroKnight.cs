@@ -9,7 +9,9 @@ public class HeroKnight : MonoBehaviour {
     [SerializeField] bool       m_noBlood = false;
     [SerializeField] GameObject m_slideDust;
 
-    
+    public bool isBlocking = false;
+    public bool isAttacking = false;
+
      private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private Sensor_HeroKnight   m_groundSensor;
@@ -43,6 +45,9 @@ public class HeroKnight : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (m_timeSinceAttack > 0.35f) {
+            isAttacking = false;
+        }
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
@@ -110,6 +115,7 @@ public class HeroKnight : MonoBehaviour {
         //Attack
         else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
+            isAttacking = true;
             m_currentAttack++;
 
             // Loop back to one after third attack
@@ -122,7 +128,6 @@ public class HeroKnight : MonoBehaviour {
 
             // Call one of three attack animations "Attack1", "Attack2", "Attack3"
              m_animator.SetTrigger("Attack" + m_currentAttack);
-
             // Reset timer
             m_timeSinceAttack = 0.0f;
         }
@@ -130,12 +135,15 @@ public class HeroKnight : MonoBehaviour {
         // Block
         else if (Input.GetMouseButtonDown(1) && !m_rolling)
         {
+            isBlocking = true;
              m_animator.SetTrigger("Block");
              m_animator.SetBool("IdleBlock", true);
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(1)){
+            isBlocking = false;
              m_animator.SetBool("IdleBlock", false);
+        }
 
         // Roll
         else if (Input.GetKeyDown("left shift") && !m_rolling && !m_isWallSliding)

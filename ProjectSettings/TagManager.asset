@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Firepit
   - Bird
+  - Enemy
   layers:
   - Default
   - TransparentFX
