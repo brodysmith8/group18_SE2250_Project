@@ -56,12 +56,16 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\_Scripts\Parallex.cs" />
-    <Compile Include="Assets\_Scripts\CameraFollow.cs" />
+    <Compile Include="Assets\__Scripts\Parallex.cs" />
+    <Compile Include="Assets\__Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Hero Knight - Pixel Art\Demo\Sensor_HeroKnight.cs" />
     <Compile Include="Assets\Hero Knight - Pixel Art\Demo\HeroKnight.cs" />
     <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
     <Compile Include="Assets\Hero Knight - Pixel Art\Demo\DestroyEvent_HeroKnight.cs" />
+    <Compile Include="Assets\__Scripts\HeroHealth.cs" />
+    <Compile Include="Assets\__Scripts\HealthBarStatus.cs" />
+    <Compile Include="Assets\__Scripts\HawkFly.cs" />
+    <Compile Include="Assets\__Scripts\Bounds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Hero Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
