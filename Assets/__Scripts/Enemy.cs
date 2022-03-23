@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour
         playerObject = GameObject.Find("HeroKnight");
         player = playerObject.GetComponent<HeroKnight>();
         
-        if (this.gameObject.name == "Boss") 
+        if (this.gameObject.name == "Boss(Clone)") 
             isBoss = true;
 
         GetComponent<SpriteRenderer>().flipX = true;
@@ -226,19 +226,26 @@ public class Enemy : MonoBehaviour
         enemyCurrentHealth -= amount; // subtract health
         print("damage");
 
-        if (!isBoss) 
-            m_animator.SetTrigger("Hurt");
+        // if (!isBoss) 
+        //     m_animator.SetTrigger("Hurt");
 
         if (enemyCurrentHealth <= 0)
         {
             deadState = true;
+            
+            if (isBoss) {
+                GameObject.Find("Main Camera").GetComponent<EnemySpawner>().UpdatePoints(500);
+            } else if (!isBoss) {
+                GameObject.Find("Main Camera").GetComponent<EnemySpawner>().UpdatePoints(150);
+            }
+
             if (shieldKill) {
                 HealPlayer(20);
             } else {
                 HealPlayer(35);
             }
-            if(!isBoss)
-                m_animator.SetTrigger("die");
+            // if(!isBoss)
+            //     m_animator.SetTrigger("die");
             
             Invoke("DeleteEnemy", 1f);
         }

@@ -118,7 +118,7 @@ public class HeroKnight : MonoBehaviour
             if (Input.GetKeyDown("o"))
             {
                 shieldCombatMode = !shieldCombatMode;
-                print("ShieldCombatMode: " + shieldCombatMode);
+                GameObject.Find("Main Camera").GetComponent<EnemySpawner>().UpdateShieldStatus(shieldCombatMode);
             }
 
             //Hurt

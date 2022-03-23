@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject camera; 
     
     [SerializeField] GameObject enemyPrefab;
+    [SerializeField] GameObject bossPrefab;
     [SerializeField] int spawnXOffset = 7;
     [SerializeField] int maxEnemies = 3;
 
     private GameObject spawnedEnemy;
     private int currentEnemies = 0;
     private float lastXCoord;
+    private bool bossMan = false;
+    private int currentPoints = 0;
 
     public HeroKnight player;
     public GameObject playerObject;
@@ -39,9 +43,10 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerObject.transform.position.x >= 30 && spawnedEnemy == null) {
-            // spawn boss
-            
+        if (!bossMan && playerObject.transform.position.x >= 30 && spawnedEnemy == null) {
+            // spawn boss0
+            bossMan = true;
+            spawnedEnemy = Instantiate(bossPrefab, new Vector2(52f,-3.56f), new Quaternion(0,0,0,0));
         }
 
         // this is a spawn condition.
@@ -51,5 +56,24 @@ public class EnemySpawner : MonoBehaviour
             spawnedEnemy = Instantiate(enemyPrefab, new Vector2(playerObject.transform.position.x + spawnXOffset, 0), new Quaternion(0, 0, 0, 0));
             currentEnemies++;
         }
+    
+    }
+    
+    public void UpdatePoints(int pointVal) {
+        currentPoints += pointVal;
+        Text text = GameObject.Find("PointText").GetComponent<Text>();
+        text.text = "Points: " + currentPoints;
+        
+    }
+
+    public void UpdateShieldStatus(bool status) {
+        Text text = GameObject.Find("ShieldText").GetComponent<Text>();
+        
+        if(status) {
+            text.text = "Shield Status: Attack";
+        } else {
+            text.text = "Shield Status: Blocking";
+        }
+        
     }
 }
